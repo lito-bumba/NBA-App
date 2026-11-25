@@ -55,19 +55,19 @@ class MainActivity : ComponentActivity() {
                 ) { paddingValues ->
                     when (currentTab) {
                         MainTab.HOME -> {
-                            HomeScreen(
-                                viewModel = viewModel,
-                                modifier = Modifier.padding(paddingValues),
-                                onTeamClick = { }
-                            )
+//                            HomeScreen(
+//                                viewModel = viewModel,
+//                                modifier = Modifier.padding(paddingValues),
+//                                onTeamClick = { }
+//                            )
                         }
 
                         MainTab.PLAYERS -> {
-                            PlayerScreen(
-                                viewModel = viewModel,
-                                modifier = Modifier.padding(paddingValues),
-                                onPlayerClick = {}
-                            )
+//                            PlayerScreen(
+//                                viewModel = viewModel,
+//                                modifier = Modifier.padding(paddingValues),
+//                                onPlayerClick = {}
+//                            )
                         }
                     }
                 }

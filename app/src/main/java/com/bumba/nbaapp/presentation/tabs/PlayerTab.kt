@@ -18,14 +18,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,37 +40,57 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumba.nbaapp.domain.model.Player
-import com.bumba.nbaapp.presentation.MainViewModel
+import com.bumba.nbaapp.presentation.components.GenericErrorCard
 
-@Composable
-fun PlayerScreen(
-    viewModel: MainViewModel,
-    modifier: Modifier = Modifier,
-    onPlayerClick: (Player) -> Unit = {}
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    PlayerScreen(
-        modifier = modifier,
-        players = uiState.players,
-        onPlayerClick = onPlayerClick
-    )
+sealed interface PlayerTabState {
+    data object Loading : PlayerTabState
+    data class Error(val isInternetError: Boolean) : PlayerTabState
+    data class Success(
+        val players: List<Player>,
+        val selectedSort: String
+    ) : PlayerTabState
 }
 
 @Composable
 fun PlayerScreen(
-    modifier: Modifier = Modifier,
-    players: List<Player> = listOf(
-        Player(
-            firstName = "Žydrūnas",
-            lastName = "Ilgauskas",
-            teamName = "Cleavland Cavaliers"
-        )
-    ),
+    uiState: PlayerTabState,
     onPlayerClick: (Player) -> Unit = {}
 ) {
-    var searchQuery by remember { mutableStateOf("") }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        when (uiState) {
+            PlayerTabState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(64.dp),
+                    strokeWidth = 8.dp
+                )
+            }
 
+            is PlayerTabState.Error -> GenericErrorCard(
+                modifier = Modifier.align(Alignment.Center),
+                isInternetError = uiState.isInternetError,
+                onRetry = {}
+            )
+
+            is PlayerTabState.Success -> PlayerScreen(
+                players = uiState.players,
+                onPlayerClick = onPlayerClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlayerScreen(
+    players: List<Player>,
+    onPlayerClick: (Player) -> Unit = {}
+) {
+    var searchQuery by rememberSaveable { mutableStateOf("") }
     val filteredPlayers = remember(players, searchQuery) {
         if (searchQuery.isBlank()) {
             players
@@ -83,22 +104,19 @@ fun PlayerScreen(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .padding(horizontal = 24.dp)
     ) {
         Spacer(modifier = Modifier.height(32.dp))
-
         Text(
             text = "Players",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
-
         Spacer(modifier = Modifier.height(20.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,9 +155,7 @@ fun PlayerScreen(
                 }
             )
         }
-
         Spacer(modifier = Modifier.height(28.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -166,15 +182,11 @@ fun PlayerScreen(
                 modifier = Modifier.weight(1.6f)
             )
         }
-
         HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth(0.92f)
-                .padding(top = 10.dp, bottom = 14.dp),
+            modifier = Modifier.padding(top = 10.dp, bottom = 14.dp),
             thickness = 1.dp,
             color = Color(0xFFCCCCCC)
         )
-
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -184,7 +196,6 @@ fun PlayerScreen(
                     onClick = { onPlayerClick(player) }
                 )
             }
-
             item {
                 Text(
                     text = "...",
@@ -202,7 +213,7 @@ fun PlayerScreen(
 }
 
 @Composable
-fun PlayerRow(
+private fun PlayerRow(
     player: Player,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -253,8 +264,19 @@ fun PlayerRow(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 740)
+@Preview
 @Composable
 private fun PlayerScreenPreview() {
-    PlayerScreen()
+    PlayerScreen(
+        PlayerTabState.Success(
+            listOf(
+                Player(
+                    firstName = "Žydrūnas",
+                    lastName = "Ilgauskas",
+                    teamName = "Cleavland Cavaliers"
+                )
+            ),
+            ""
+        )
+    )
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NBA App</string>
+    <string name="home">Home</string>
+    <string name="name">Name</string>
+    <string name="city">City</string>
+    <string name="conference">Conference</string>
+    <string name="internet_error_message">Ocorreu um erro na conexão, verifica a tua conexão com a internet</string>
+    <string name="unknown_error_message">Ocorreu um erro desconhecido, tente mais tarde</string>
+    <string name="error_icon">error-icon</string>
 </resources>
