@@ -16,10 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,13 +39,51 @@ import com.bumba.nbaapp.R
 import com.bumba.nbaapp.core.presentation.UiState
 import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Game
+import kotlinx.coroutines.launch
 
 data class TeamBottomSheetState(
     val games: List<Game>
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamBottomSheetContent(
+fun TeamBottomSheet(
+    onDismiss: () -> Unit = {},
+    sheetState: SheetState,
+    teamName: String,
+    uiState: UiState<TeamBottomSheetState>,
+    onFetchData: () -> Unit
+) {
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        onFetchData()
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = Color.White,
+        dragHandle = null,
+    ) {
+        TeamBottomSheetContent(
+            teamName = teamName,
+            uiState = uiState,
+            onBackToHome = {
+                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        onDismiss()
+                    }
+                }
+            },
+            onGameClick = { },
+            onRetry = onFetchData
+        )
+    }
+}
+
+@Composable
+private fun TeamBottomSheetContent(
     teamName: String,
     uiState: UiState<TeamBottomSheetState>,
     onBackToHome: () -> Unit = {},

@@ -6,9 +6,9 @@ import com.bumba.nbaapp.domain.model.Team
 
 interface NbaRepository {
 
-    fun getTeams(): List<Team>
+    suspend fun getTeams(): List<Team>
 
-    fun getPlayers(): List<Player>
+    suspend fun getPlayers(): List<Player>
 
-    fun getGames(): List<Game>
+    suspend fun getGames(teamId: Int? = null): List<Game>
 }
