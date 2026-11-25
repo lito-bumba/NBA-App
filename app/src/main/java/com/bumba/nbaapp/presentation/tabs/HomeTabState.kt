@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,21 +38,24 @@ import com.bumba.nbaapp.core.presentation.UiState
 import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Team
 
-data class HomeTab(
+data class HomeTabState(
     val teams: List<Team>,
     val selectedSort: String
 )
 
 @Composable
 fun HomeScreen(
-    uiState: UiState<HomeTab>,
+    uiState: UiState<HomeTabState>,
     onSortClick: (String) -> Unit = {},
     onTeamClick: (Team) -> Unit = {},
-    onRetry: () -> Unit = {}
+    onFetchData: () -> Unit = {}
 ) {
+    LaunchedEffect(Unit) {
+        onFetchData()
+    }
     UiStateHandler(
         uiState = uiState,
-        onRetry = onRetry
+        onRetry = onFetchData
     ) { homeData ->
         HomeTabSuccessContent(
             uiState = homeData,
@@ -63,7 +67,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeTabSuccessContent(
-    uiState: HomeTab,
+    uiState: HomeTabState,
     onSortClick: (String) -> Unit,
     onTeamClick: (Team) -> Unit
 ) {
@@ -218,7 +222,7 @@ private fun TeamRow(
 private fun HomeScreenSuccessPreview() {
     HomeScreen(
         uiState = UiState.Success(
-            data = HomeTab(
+            data = HomeTabState(
                 teams = listOf(
                     Team(
                         id = "1",

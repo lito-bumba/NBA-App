@@ -22,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,20 +43,24 @@ import com.bumba.nbaapp.core.presentation.UiState
 import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Player
 
-data class PlayerTab(
+data class PlayerTabState(
     val players: List<Player>,
     val selectedSort: String
 )
 
 @Composable
 fun PlayerScreen(
-    uiState: UiState<PlayerTab>,
+    uiState: UiState<PlayerTabState>,
     onPlayerClick: (Player) -> Unit = {},
-    onRetry: () -> Unit = {}
+    onFetchData: () -> Unit = {}
 ) {
+    LaunchedEffect(Unit) {
+        onFetchData()
+    }
+
     UiStateHandler(
         uiState = uiState,
-        onRetry = onRetry
+        onRetry = onFetchData
     ) { uiState ->
         PlayerScreen(
             players = uiState.players,
@@ -248,7 +253,7 @@ private fun PlayerRow(
 private fun PlayerScreenPreview() {
     PlayerScreen(
         UiState.Success(
-            PlayerTab(
+            PlayerTabState(
                 players = listOf(
                     element = Player(
                         firstName = "Žydrūnas",

@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,21 +31,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumba.nbaapp.R
-import com.bumba.nbaapp.core.presentation.GenericErrorCard
+import com.bumba.nbaapp.core.presentation.UiState
+import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Game
 
-sealed interface TeamBottomSheetState {
-    data object Loading : TeamBottomSheetState
-    data class Error(val isInternetError: Boolean) : TeamBottomSheetState
-    data class Success(
-        val games: List<Game>
-    ) : TeamBottomSheetState
-}
+data class TeamBottomSheetState(
+    val games: List<Game>
+)
 
 @Composable
 fun TeamBottomSheetContent(
     teamName: String,
-    uiState: TeamBottomSheetState,
+    uiState: UiState<TeamBottomSheetState>,
     onBackToHome: () -> Unit = {},
     onGameClick: (Game) -> Unit = {},
     onRetry: () -> Unit = {}
@@ -91,24 +87,12 @@ fun TeamBottomSheetContent(
         }
         Spacer(modifier = Modifier.height(56.dp))
         Box(modifier = Modifier.fillMaxSize()) {
-            when (uiState) {
-                TeamBottomSheetState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(64.dp),
-                        strokeWidth = 8.dp
-                    )
-                }
-
-                is TeamBottomSheetState.Error -> GenericErrorCard(
-                    modifier = Modifier.align(Alignment.Center),
-                    isInternetError = uiState.isInternetError,
-                    onRetry = onRetry
-                )
-
-                is TeamBottomSheetState.Success -> TeamBottomSheetContent(
-                    uiState = uiState,
+            UiStateHandler(
+                uiState = uiState,
+                onRetry = onRetry
+            ) { teamBottomSheetState ->
+                TeamBottomSheetContent(
+                    uiState = teamBottomSheetState,
                     onGameClick = onGameClick
                 )
             }
@@ -118,7 +102,7 @@ fun TeamBottomSheetContent(
 
 @Composable
 private fun TeamBottomSheetContent(
-    uiState: TeamBottomSheetState.Success,
+    uiState: TeamBottomSheetState,
     onGameClick: (Game) -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
@@ -252,13 +236,15 @@ private fun formatTeamName(name: String): String {
 private fun TeamScreenPreview() {
     TeamBottomSheetContent(
         teamName = "Atlanta Hawks",
-        uiState = TeamBottomSheetState.Success(
-            listOf(
-                Game(
-                    homeTeamName = "Atlanta Hawks",
-                    homeTeamScore = "103",
-                    visitorTeamName = "Chicago Bulls",
-                    visitorTeamScore = "103"
+        uiState = UiState.Success(
+            TeamBottomSheetState(
+                listOf(
+                    Game(
+                        homeTeamName = "Atlanta Hawks",
+                        homeTeamScore = "103",
+                        visitorTeamName = "Chicago Bulls",
+                        visitorTeamScore = "103"
+                    )
                 )
             )
         )

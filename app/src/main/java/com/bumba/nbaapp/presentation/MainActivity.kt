@@ -26,7 +26,6 @@ import com.bumba.nbaapp.presentation.theme.NBAAppTheme
 enum class MainTab { HOME, PLAYERS }
 
 class MainActivity : ComponentActivity() {
-
     private val viewModel: MainViewModel by viewModels {
         viewModelFactory {
             initializer {
@@ -43,7 +42,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             NBAAppTheme {
                 var currentTab by rememberSaveable { mutableStateOf(MainTab.HOME) }
-//                val state = viewModel.state.collectAsStateWithLifecycle()
+                val homeState by viewModel.homeState.collectAsStateWithLifecycle()
+                val playerState by viewModel.playerState.collectAsStateWithLifecycle()
 
                 Scaffold(
                     containerColor = Color.White,
@@ -57,19 +57,20 @@ class MainActivity : ComponentActivity() {
                     Box(Modifier.padding(paddingValues)) {
                         when (currentTab) {
                             MainTab.HOME -> {
-//                                HomeScreen(
-//                                    uiState = state,
-//                                    onSortClick = TODO(),
-//                                    onTeamClick = TODO()
-//                                )
+                                HomeScreen(
+                                    uiState = homeState,
+                                    onSortClick = viewModel::onSortClick,
+                                    onTeamClick = { },
+                                    onFetchData = viewModel::getTeams
+                                )
                             }
 
                             MainTab.PLAYERS -> {
-//                                PlayerScreen(
-//                                    viewModel = viewModel,
-//                                    modifier = Modifier.padding(paddingValues),
-//                                    onPlayerClick = {}
-//                                )
+                                PlayerScreen(
+                                    uiState = playerState,
+                                    onPlayerClick = { },
+                                    onFetchData = viewModel::getPlayers
+                                )
                             }
                         }
                     }
