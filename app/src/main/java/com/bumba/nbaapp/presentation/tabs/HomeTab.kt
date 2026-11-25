@@ -17,11 +17,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +79,19 @@ private fun HomeTabSuccessContent(
     onSortClick: (String) -> Unit,
     onTeamClick: (Team) -> Unit
 ) {
+    var showSortDialog by rememberSaveable { mutableStateOf(false) }
+
+    if (showSortDialog) {
+        SortDialog(
+            currentSort = uiState.selectedSort,
+            onSortSelected = { selected ->
+                onSortClick(selected)
+                showSortDialog = false
+            },
+            onDismiss = { showSortDialog = false }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,14 +107,14 @@ private fun HomeTabSuccessContent(
                 text = stringResource(R.string.home),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
             )
 
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
                     .background(Color(0xFFD3D3D3))
-                    .clickable { onSortClick(uiState.selectedSort) }
+                    .clickable { showSortDialog = true }
                     .padding(horizontal = 20.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -215,6 +236,68 @@ private fun TeamRow(
             )
         }
     }
+}
+
+@Composable
+private fun SortDialog(
+    currentSort: String,
+    onSortSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val sortOptions = listOf("Name", "City", "Conference")
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Sort by",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+        },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                sortOptions.forEach { option ->
+                    val isSelected = option.equals(currentSort, ignoreCase = true)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSortSelected(option) }
+                            .padding(vertical = 12.dp, horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = option,
+                            fontSize = 16.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = Color.Black
+                        )
+                        RadioButton(
+                            selected = isSelected,
+                            onClick = { onSortSelected(option) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color.Black,
+                                unselectedColor = Color.Gray
+                            )
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = "Cancel",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        },
+        containerColor = Color.White
+    )
 }
 
 @Preview

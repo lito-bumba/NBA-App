@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val nbaRepository: NbaRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
     val homeState: StateFlow<UiState<HomeTabState>>
@@ -102,11 +102,20 @@ class MainViewModel(
         }
     }
 
-    fun onSortClick(currentSort: String = "Name") {
+    fun onSortClick(selectedSort: String = "Name") {
         homeState.update { currentState ->
             if (currentState is UiState.Success) {
-                val sortedTeams = currentState.data.teams.sortedBy { it.name }
-                UiState.Success(currentState.data.copy(teams = sortedTeams))
+                val sortedTeams = when (selectedSort.lowercase()) {
+                    "city" -> currentState.data.teams.sortedBy { it.city.lowercase() }
+                    "conference" -> currentState.data.teams.sortedBy { it.conference.lowercase() }
+                    else -> currentState.data.teams.sortedBy { it.name.lowercase() }
+                }
+                UiState.Success(
+                    currentState.data.copy(
+                        teams = sortedTeams,
+                        selectedSort = selectedSort
+                    )
+                )
             } else currentState
         }
     }
