@@ -57,6 +57,7 @@ class NbaRemoteDataSource(
 
         fun createDefaultHttpClient(): HttpClient {
             return HttpClient(OkHttp) {
+                expectSuccess = true
                 install(ContentNegotiation) {
                     json(
                         Json {

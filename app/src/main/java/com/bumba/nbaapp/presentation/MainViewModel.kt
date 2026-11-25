@@ -3,11 +3,13 @@ package com.bumba.nbaapp.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumba.nbaapp.core.presentation.UiState
+import com.bumba.nbaapp.core.presentation.toErrorUiState
 import com.bumba.nbaapp.domain.model.Team
 import com.bumba.nbaapp.domain.repository.NbaRepository
 import com.bumba.nbaapp.presentation.components.TeamBottomSheetState
 import com.bumba.nbaapp.presentation.tabs.HomeTabState
 import com.bumba.nbaapp.presentation.tabs.PlayerTabState
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,11 +46,10 @@ class MainViewModel(
                         selectedSort = "Name"
                     )
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                homeState.value = UiState.Error(
-                    isInternetError = false,
-                    message = e.localizedMessage
-                )
+                homeState.value = e.toErrorUiState()
             }
         }
     }
@@ -65,11 +66,10 @@ class MainViewModel(
                         selectedSort = ""
                     )
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                playerState.value = UiState.Error(
-                    isInternetError = false,
-                    message = e.localizedMessage
-                )
+                playerState.value = e.toErrorUiState()
             }
         }
     }
@@ -93,11 +93,10 @@ class MainViewModel(
                 teamBottomSheetState.value = UiState.Success(
                     TeamBottomSheetState(games = loadedGames)
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                teamBottomSheetState.value = UiState.Error(
-                    isInternetError = false,
-                    message = e.localizedMessage
-                )
+                teamBottomSheetState.value = e.toErrorUiState()
             }
         }
     }
