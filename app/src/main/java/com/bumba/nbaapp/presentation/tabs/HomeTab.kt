@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -34,57 +33,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumba.nbaapp.R
+import com.bumba.nbaapp.core.presentation.UiState
+import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Team
-import com.bumba.nbaapp.presentation.components.GenericErrorCard
 
-sealed interface HomeTabState {
-    data object Loading : HomeTabState
-    data class Error(val isInternetError: Boolean) : HomeTabState
-    data class Success(
-        val teams: List<Team>,
-        val selectedSort: String
-    ) : HomeTabState
-}
+data class HomeTab(
+    val teams: List<Team>,
+    val selectedSort: String
+)
 
 @Composable
 fun HomeScreen(
-    uiState: HomeTabState,
+    uiState: UiState<HomeTab>,
     onSortClick: (String) -> Unit = {},
-    onTeamClick: (Team) -> Unit = {}
+    onTeamClick: (Team) -> Unit = {},
+    onRetry: () -> Unit = {}
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        when (uiState) {
-            HomeTabState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(64.dp),
-                    strokeWidth = 8.dp
-                )
-            }
-
-            is HomeTabState.Error -> GenericErrorCard(
-                modifier = Modifier.align(Alignment.Center),
-                isInternetError = uiState.isInternetError,
-                onRetry = {}
-            )
-
-            is HomeTabState.Success -> HomeTabSuccessContent(
-                onSortClick = onSortClick,
-                uiState = uiState,
-                onTeamClick = onTeamClick
-            )
-        }
+    UiStateHandler(
+        uiState = uiState,
+        onRetry = onRetry
+    ) { homeData ->
+        HomeTabSuccessContent(
+            uiState = homeData,
+            onSortClick = onSortClick,
+            onTeamClick = onTeamClick
+        )
     }
 }
 
 @Composable
 private fun HomeTabSuccessContent(
-    uiState: HomeTabState.Success,
+    uiState: HomeTab,
     onSortClick: (String) -> Unit,
     onTeamClick: (Team) -> Unit
 ) {
@@ -236,38 +215,22 @@ private fun TeamRow(
 
 @Preview
 @Composable
-private fun HomeScreenLoadingPreview() {
-    HomeScreen(HomeTabState.Loading)
-}
-
-@Preview
-@Composable
-private fun HomeScreenInternetErrorPreview() {
-    HomeScreen(HomeTabState.Error(true))
-}
-
-@Preview
-@Composable
-private fun HomeScreenUnknownErrorPreview() {
-    HomeScreen(HomeTabState.Error(false))
-}
-
-@Preview
-@Composable
 private fun HomeScreenSuccessPreview() {
     HomeScreen(
-        HomeTabState.Success(
-            teams = listOf(
-                Team(
-                    id = "1",
-                    conference = "East",
-                    division = "Southeast",
-                    city = "Atlanta",
-                    name = "Atlanta Hawks",
-                    abbreviation = "ATL"
-                )
-            ),
-            selectedSort = "Name"
+        uiState = UiState.Success(
+            data = HomeTab(
+                teams = listOf(
+                    Team(
+                        id = "1",
+                        conference = "East",
+                        division = "Southeast",
+                        city = "Atlanta",
+                        name = "Atlanta Hawks",
+                        abbreviation = "ATL"
+                    )
+                ),
+                selectedSort = "Name"
+            )
         )
     )
 }

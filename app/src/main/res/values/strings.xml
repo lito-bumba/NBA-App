@@ -7,4 +7,5 @@
     <string name="internet_error_message">Ocorreu um erro na conexão, verifica a tua conexão com a internet</string>
     <string name="unknown_error_message">Ocorreu um erro desconhecido, tente mais tarde</string>
     <string name="error_icon">error-icon</string>
+    <string name="try_again">Tentar novamente</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.bumba.nbaapp.presentation.components
+package com.bumba.nbaapp.core.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +27,7 @@ import com.bumba.nbaapp.R
 fun GenericErrorCard(
     modifier: Modifier = Modifier,
     isInternetError: Boolean = false,
+    message: String? = null,
     onRetry: () -> Unit = {}
 ) {
     Column(
@@ -44,21 +45,19 @@ fun GenericErrorCard(
         Spacer(Modifier.height(16.dp))
         val errorRes = if (isInternetError) R.string.internet_error_message
         else R.string.unknown_error_message
-        val message = stringResource(errorRes)
+        val defaultMessage = stringResource(errorRes)
         Text(
-            text = message,
+            text = "$defaultMessage $message",
             color = Color.Red,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(16.dp))
         Button(
             onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(
-//                containerColor = Color.Transparent
-            )
+            colors = ButtonDefaults.buttonColors()
         ) {
             Text(
-                text = "Tentar novamente",
+                text = stringResource(R.string.try_again),
                 color = Color.Black
             )
         }

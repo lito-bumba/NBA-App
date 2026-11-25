@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -39,49 +38,29 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumba.nbaapp.core.presentation.UiState
+import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Player
-import com.bumba.nbaapp.presentation.components.GenericErrorCard
 
-sealed interface PlayerTabState {
-    data object Loading : PlayerTabState
-    data class Error(val isInternetError: Boolean) : PlayerTabState
-    data class Success(
-        val players: List<Player>,
-        val selectedSort: String
-    ) : PlayerTabState
-}
+data class PlayerTab(
+    val players: List<Player>,
+    val selectedSort: String
+)
 
 @Composable
 fun PlayerScreen(
-    uiState: PlayerTabState,
-    onPlayerClick: (Player) -> Unit = {}
+    uiState: UiState<PlayerTab>,
+    onPlayerClick: (Player) -> Unit = {},
+    onRetry: () -> Unit = {}
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        when (uiState) {
-            PlayerTabState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(64.dp),
-                    strokeWidth = 8.dp
-                )
-            }
-
-            is PlayerTabState.Error -> GenericErrorCard(
-                modifier = Modifier.align(Alignment.Center),
-                isInternetError = uiState.isInternetError,
-                onRetry = {}
-            )
-
-            is PlayerTabState.Success -> PlayerScreen(
-                players = uiState.players,
-                onPlayerClick = onPlayerClick
-            )
-        }
+    UiStateHandler(
+        uiState = uiState,
+        onRetry = onRetry
+    ) { uiState ->
+        PlayerScreen(
+            players = uiState.players,
+            onPlayerClick = onPlayerClick
+        )
     }
 }
 
@@ -268,15 +247,17 @@ private fun PlayerRow(
 @Composable
 private fun PlayerScreenPreview() {
     PlayerScreen(
-        PlayerTabState.Success(
-            listOf(
-                Player(
-                    firstName = "Žydrūnas",
-                    lastName = "Ilgauskas",
-                    teamName = "Cleavland Cavaliers"
-                )
-            ),
-            ""
+        UiState.Success(
+            PlayerTab(
+                players = listOf(
+                    element = Player(
+                        firstName = "Žydrūnas",
+                        lastName = "Ilgauskas",
+                        teamName = "Cleavland Cavaliers"
+                    )
+                ),
+                selectedSort = ""
+            )
         )
     )
 }

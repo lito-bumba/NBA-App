@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumba.nbaapp.R
+import com.bumba.nbaapp.core.presentation.GenericErrorCard
 import com.bumba.nbaapp.domain.model.Game
 
 sealed interface TeamBottomSheetState {
@@ -88,7 +89,7 @@ fun TeamBottomSheetContent(
                 textAlign = TextAlign.Center
             )
         }
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(56.dp))
         Box(modifier = Modifier.fillMaxSize()) {
             when (uiState) {
                 TeamBottomSheetState.Loading -> {
@@ -121,7 +122,6 @@ private fun TeamBottomSheetContent(
     onGameClick: (Game) -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(60.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
