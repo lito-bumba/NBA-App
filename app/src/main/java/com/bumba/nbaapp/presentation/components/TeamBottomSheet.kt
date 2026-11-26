@@ -202,18 +202,6 @@ private fun TeamBottomSheetContent(
                     onClick = { onGameClick(game) }
                 )
             }
-            item {
-                Text(
-                    text = "...",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 32.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
         }
     }
 }

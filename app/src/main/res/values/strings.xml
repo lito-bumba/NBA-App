@@ -10,7 +10,4 @@
     <string name="try_again">Tentar novamente</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="close">Fechar</string>
-    <string name="recent_games">Jogos recentes</string>
-    <string name="no_games_found">Nenhum jogo encontrado</string>
 </resources>
