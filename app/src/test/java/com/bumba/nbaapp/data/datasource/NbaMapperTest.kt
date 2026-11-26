@@ -21,10 +21,8 @@ class NbaMapperTest {
 
         assertEquals("50", domain.id)
         assertEquals("", domain.conference)
-        assertEquals("", domain.division)
         assertEquals("Denver", domain.city)
         assertEquals("Denver Nuggets", domain.name)
-        assertEquals("DN", domain.abbreviation)
     }
 
     @Test
@@ -55,10 +53,8 @@ class NbaMapperTest {
 
         assertEquals("", domain.id)
         assertEquals("", domain.conference)
-        assertEquals("", domain.division)
         assertEquals("", domain.city)
         assertEquals("", domain.name)
-        assertEquals("", domain.abbreviation)
     }
 
     @Test

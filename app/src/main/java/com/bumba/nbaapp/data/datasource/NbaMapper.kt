@@ -7,10 +7,8 @@ import com.bumba.nbaapp.domain.model.Team
 fun TeamDto.toDomain(): Team = Team(
     id = id?.toString().orEmpty(),
     conference = conference?.trim().orEmpty(),
-    division = division?.trim().orEmpty(),
     city = city?.trim().orEmpty(),
     name = (fullName?.trim()?.takeIf { it.isNotBlank() } ?: name?.trim()).orEmpty(),
-    abbreviation = abbreviation?.trim().orEmpty(),
 )
 
 fun PlayerDto.toDomain(): Player = Player(

@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumba.nbaapp.R
 import com.bumba.nbaapp.core.presentation.UiState
 import com.bumba.nbaapp.core.presentation.UiStateHandler
 import com.bumba.nbaapp.domain.model.Player
@@ -136,7 +138,7 @@ private fun PlayerScreen(
                         }
                         innerTextField()
                     }
-                }
+                },
             )
         }
         Spacer(modifier = Modifier.height(28.dp))
@@ -145,14 +147,14 @@ private fun PlayerScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "First Name",
+                text = stringResource(R.string.first_name),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier.weight(0.95f)
             )
             Text(
-                text = "Last Name",
+                text = stringResource(R.string.last_name),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
@@ -178,18 +180,6 @@ private fun PlayerScreen(
                 PlayerRow(
                     player = player,
                     onClick = { onPlayerClick(player) }
-                )
-            }
-            item {
-                Text(
-                    text = "...",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 36.dp),
-                    textAlign = TextAlign.Center
                 )
             }
         }

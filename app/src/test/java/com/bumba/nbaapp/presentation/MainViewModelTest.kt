@@ -26,34 +26,26 @@ class MainViewModelTest {
         Team(
             id = "1",
             conference = "East",
-            division = "Southeast",
             city = "Atlanta",
             name = "Atlanta Hawks",
-            abbreviation = "ATL"
         ),
         Team(
             id = "6",
             conference = "East",
-            division = "Central",
             city = "Cleveland",
             name = "Cleveland Cavaliers",
-            abbreviation = "CLE"
         ),
         Team(
             id = "2",
             conference = "East",
-            division = "Atlantic",
             city = "Boston",
             name = "Boston Celtics",
-            abbreviation = "BOS"
         ),
         Team(
             id = "9",
             conference = "West",
-            division = "Pacific",
             city = "San Francisco",
             name = "Golden State Warriors",
-            abbreviation = "GSW"
         )
     )
 

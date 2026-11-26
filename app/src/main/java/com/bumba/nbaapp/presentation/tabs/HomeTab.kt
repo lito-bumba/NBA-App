@@ -36,7 +36,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -171,18 +170,6 @@ private fun HomeTabSuccessContent(
                     onClick = { onTeamClick(team) }
                 )
             }
-            item {
-                Text(
-                    text = "...",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 32.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
         }
     }
 }
@@ -310,10 +297,8 @@ private fun HomeScreenSuccessPreview() {
                     Team(
                         id = "1",
                         conference = "East",
-                        division = "Southeast",
                         city = "Atlanta",
                         name = "Atlanta Hawks",
-                        abbreviation = "ATL"
                     )
                 ),
                 selectedSort = "Name"

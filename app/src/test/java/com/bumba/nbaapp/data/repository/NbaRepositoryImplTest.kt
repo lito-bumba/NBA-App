@@ -152,7 +152,6 @@ class NbaRepositoryIntegrationTest {
             Assert.assertEquals("Atlanta Hawks", hawks.name)
             Assert.assertEquals("Atlanta", hawks.city)
             Assert.assertEquals("East", hawks.conference)
-            Assert.assertEquals("ATL", hawks.abbreviation)
         }
 
     @Test

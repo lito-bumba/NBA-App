@@ -48,7 +48,7 @@ fun GenericErrorCard(
         val defaultMessage = stringResource(errorRes)
         val errorMessage = when {
             isInternetError -> defaultMessage
-            !message.isNullOrBlank() -> "$defaultMessage\n$message"
+            !message.isNullOrBlank() -> "$defaultMessage\n\n$message"
             else -> defaultMessage
         }
         Text(
@@ -56,14 +56,14 @@ fun GenericErrorCard(
             color = Color.Red,
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(24.dp))
         Button(
             onClick = onRetry,
             colors = ButtonDefaults.buttonColors(),
         ) {
             Text(
                 text = stringResource(R.string.try_again),
-                color = Color.Black,
+                color = Color.White,
             )
         }
     }

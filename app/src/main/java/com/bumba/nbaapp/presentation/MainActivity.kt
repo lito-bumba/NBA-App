@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,7 +49,6 @@ class MainActivity : ComponentActivity() {
                 val playerState by viewModel.playerState.collectAsStateWithLifecycle()
                 val selectedTeam by viewModel.selectedTeam.collectAsStateWithLifecycle()
                 val teamBottomSheetState by viewModel.teamBottomSheetState.collectAsStateWithLifecycle()
-                val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
                 Scaffold(
                     bottomBar = {
@@ -85,7 +83,6 @@ class MainActivity : ComponentActivity() {
                 selectedTeam?.let {
                     TeamBottomSheet(
                         onDismiss = viewModel::onDismissBottomSheet,
-                        sheetState = sheetState,
                         teamName = it.name,
                         uiState = teamBottomSheetState,
                         onFetchData = viewModel::getTeamGames
